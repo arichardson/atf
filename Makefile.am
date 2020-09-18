@@ -74,10 +74,10 @@ PHONY_TARGETS += installcheck-kyua
 if HAVE_KYUA
 INSTALLCHECK_TARGETS += installcheck-kyua
 installcheck-kyua:
-	set -x; cd $(pkgtestsdir) && $(TESTS_ENVIRONMENT) \
+	set -x; set +e; cd $(pkgtestsdir) && $(TESTS_ENVIRONMENT) \
 	    $(KYUA) --config='$(KYUA_TEST_CONFIG_FILE)' test; \
-	test_exit_code=$$?; \
-	echo $$test_exit_code; \
+	ret=$$?; \
+	echo $$ret; \
 	if [ -n "$$JUNIT_OUTPUT" ]; then \
 	    cd $(pkgtestsdir) && $(TESTS_ENVIRONMENT) \
 		    $(KYUA) --config='$(KYUA_TEST_CONFIG_FILE)' \
@@ -85,7 +85,7 @@ installcheck-kyua:
 	fi; \
 	cd $(pkgtestsdir) && $(TESTS_ENVIRONMENT) \
 		$(KYUA) --config='$(KYUA_TEST_CONFIG_FILE)' report --verbose; \
-	[ $$test_exit_code -eq 0 ]
+	exit $$ret
 endif
 
 installcheck-local: $(INSTALLCHECK_TARGETS)
